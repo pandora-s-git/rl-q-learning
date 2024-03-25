@@ -113,8 +113,9 @@ for episode in tqdm(range(NUM_EPISODES)):
         state = next_state
 
         if ((episode+1)%50 == 0 or episode == 0) and previous_state != state:
-            visualize_grid_with_agent(ax, grid_world, state)
+            visualize_grid_with_agent(ax, grid_world, previous_state)
             plt.pause(0.5)
+            visualize_grid_with_agent(ax, grid_world, state)
             clear_output(wait=True)
             display(fig)
     
