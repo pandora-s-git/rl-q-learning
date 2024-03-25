@@ -36,11 +36,11 @@ grid_world[GRID_SIZE-2, GRID_SIZE-2] = GOAL_REWARD
 
 ## FUNCTION TO CHECK IF THE STATE IS TERMINAL (GOAL OR OBSTACLE)
 report = []
-def is_terminal(state):
+def is_terminal(state, steps):
     if grid_world[state] == GOAL_REWARD:
-        report.append(1)
+        report.append((1,steps))
     elif grid_world[state] == OBSTACLE_REWARD:
-        report.append(0)
+        report.append((0,steps))
     return grid_world[state] in [GOAL_REWARD, OBSTACLE_REWARD]
 
 ## EPSILON-GREEDY POLICY
@@ -102,7 +102,8 @@ for episode in tqdm(range(NUM_EPISODES)):
     fig, ax = plt.subplots()
 
     reward = 0
-    while not is_terminal(state):
+    steps = 0
+    while not is_terminal(state, steps):
         action = epsilon_greedy_policy(state, Q, episode)
         previous_state = state
         next_state, action_reward = take_action(state, action)
@@ -118,13 +119,15 @@ for episode in tqdm(range(NUM_EPISODES)):
             visualize_grid_with_agent(ax, grid_world, state)
             clear_output(wait=True)
             display(fig)
+        steps += 1
     
     plt.close()
 
 ## RESULTS
 
-# Epsilon + Report
-plt.scatter([i for i in range(len(report))], report, color='blue')
+# Epsilon + Success
+success = [i[0] for i in report]
+plt.scatter([i for i in range(len(success))], success, color='blue')
 plt.scatter(x, decay, color='red')
 plt.xlabel('Episode')
 plt.ylabel('Success or Not')
@@ -132,7 +135,7 @@ plt.title('Success Plot')
 plt.show()
 
 # Success Rate
-success_rate = [sum(report[max(len(report[:i+1])-100,0):i+1]) / len(report[max(len(report[:i+1])-100,0):i+1]) for i in range(len(report))]
+success_rate = [sum(success[max(len(success[:i+1])-100,0):i+1]) / len(success[max(len(success[:i+1])-100,0):i+1]) for i in range(len(success))]
 plt.plot(range(len(report)), success_rate, linestyle='-')
 plt.xlabel('Time (Episodes)')
 plt.ylabel('Success Rate of Last 100')
@@ -140,23 +143,32 @@ plt.title('Success Rate Over Time/Episodes')
 plt.ylim(0, 1)
 plt.show()
 
+# N Steps
+n_steps = [i[1] for i in report]
+plt.plot(range(len(report)), n_steps, linestyle='-')
+plt.xlabel('Time (Episodes)')
+plt.ylabel('N Steps')
+plt.title('N Steps every Episode')
+plt.show()
+
 # All
-plt.subplot(3,1,1)
+plt.subplot(2,2,1)
 plt.plot(x, decay, color='red')
 plt.xlabel('Episode')
 plt.ylabel('Epsilon')
-plt.title('Epsilon Over Time/Episodes')
-plt.subplot(3,1,2)
-plt.scatter([i for i in range(len(report))], report, color='blue')
+plt.subplot(2,2,2)
+plt.scatter([i for i in range(len(success))], success, color='blue')
 plt.xlabel('Episode')
 plt.ylabel('Success or Not')
-plt.title('Success Plot')
-plt.subplot(3,1,3)
+plt.subplot(2,2,3)
 plt.plot(range(len(report)), success_rate, linestyle='-')
 plt.xlabel('Time (Episodes)')
 plt.ylabel('Success Rate of Last 100')
-plt.title('Success Rate Over Time/Episodes')
 plt.ylim(0, 1)
+plt.subplot(2,2,4)
+plt.plot(range(len(report)), n_steps, linestyle='-')
+plt.xlabel('Time (Episodes)')
+plt.ylabel('N Steps')
 plt.show()
 
 
