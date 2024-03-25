@@ -134,6 +134,22 @@ plt.ylabel('Success or Not')
 plt.title('Success Plot')
 plt.show()
 
+# N Steps
+n_steps = [i[1] for i in report]
+plt.plot(range(len(report)), n_steps, linestyle='-')
+plt.xlabel('Time (Episodes)')
+plt.ylabel('N Steps')
+plt.title('N Steps every Episode')
+plt.show()
+
+# N Steps Goal
+n_steps_goal = [i[1] for i in report if i[0] == 1]
+plt.plot(range(len(n_steps_goal)), n_steps_goal, linestyle='-', color = 'green')
+plt.xlabel('N Success')
+plt.ylabel('N Steps')
+plt.title('N Steps every Success')
+plt.show()
+
 # Success Rate
 success_rate = [sum(success[max(len(success[:i+1])-100,0):i+1]) / len(success[max(len(success[:i+1])-100,0):i+1]) for i in range(len(success))]
 plt.plot(range(len(report)), success_rate, linestyle='-')
@@ -143,32 +159,28 @@ plt.title('Success Rate Over Time/Episodes')
 plt.ylim(0, 1)
 plt.show()
 
-# N Steps
-n_steps = [i[1] for i in report]
-plt.plot(range(len(report)), n_steps, linestyle='-')
-plt.xlabel('Time (Episodes)')
-plt.ylabel('N Steps')
-plt.title('N Steps every Episode')
-plt.show()
-
 # All
-plt.subplot(2,2,1)
+plt.subplot(3,2,1)
 plt.plot(x, decay, color='red')
 plt.xlabel('Episode')
 plt.ylabel('Epsilon')
-plt.subplot(2,2,2)
+plt.subplot(3,2,2)
 plt.scatter([i for i in range(len(success))], success, color='blue')
 plt.xlabel('Episode')
 plt.ylabel('Success or Not')
-plt.subplot(2,2,3)
+plt.subplot(3,2,3)
+plt.plot(range(len(report)), n_steps, linestyle='-')
+plt.xlabel('Time (Episodes)')
+plt.ylabel('N Steps')
+plt.subplot(3,2,4)
+plt.plot(range(len(n_steps_goal)), n_steps_goal, linestyle='-', color = 'green')
+plt.xlabel('N Success')
+plt.ylabel('N Steps')
+plt.subplot(3,2,5)
 plt.plot(range(len(report)), success_rate, linestyle='-')
 plt.xlabel('Time (Episodes)')
 plt.ylabel('Success Rate of Last 100')
 plt.ylim(0, 1)
-plt.subplot(2,2,4)
-plt.plot(range(len(report)), n_steps, linestyle='-')
-plt.xlabel('Time (Episodes)')
-plt.ylabel('N Steps')
 plt.show()
 
 
